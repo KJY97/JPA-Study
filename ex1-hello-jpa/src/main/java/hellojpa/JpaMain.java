@@ -120,7 +120,10 @@ public class JpaMain {
             Member member = new Member();
             member.setUsername("member1");
 //            member.setTeamId(team.getId());
-            member.setTeam(team); // JPA가 알아서 team이 외래 키임을 알아서 연결한다. 얘가 포인트!! 조심하자
+//            member.setTeam(team); // JPA가 알아서 team이 외래 키임을 알아서 연결한다. 얘가 포인트!! 조심하자
+//            team.getMembers().add(member); // 연관관계는 양쪽 다 신경 써야 한다!!
+            // 두 코드를 모두 작성하는 것은 실수를 발생할 수 있으므로 member.setTeam() 메소드를 수정한다. => 연관관계 편의 메소드
+            member.changeTeam(team);
             em.persist(member);
 
             // db에서 가져온 쿼리를 보고 싶다면 영속성 컨텍스트 초기화
@@ -146,12 +149,14 @@ public class JpaMain {
 //                System.out.println("m = " + m.getUsername());
 //            }
 
-            Team findTeam = em.find(Team.class, team.getId());
+            Team findTeam = em.find(Team.class, team.getId()); // 1차 캐시
             List<Member> members = findTeam.getMembers();
 
+            System.out.println("=================");
             for (Member m : members) {
                 System.out.println("m = " + m.getUsername());
             }
+            System.out.println("=================");
             tx.commit(); // 트랜잭션 종료
 
 

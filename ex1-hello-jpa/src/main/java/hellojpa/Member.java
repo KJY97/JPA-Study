@@ -82,7 +82,14 @@ public class Member {
         return team;
     }
 
-    public void setTeam(Team team) {
+//    public void setTeam(Team team) {
+//        this.team = team;
+//    }
+
+    // 연관관게 편의 메소드
+    // 연관관계를 맺는 메소드이기 때문에 특별?해 보이기 위해 change로 변경
+    public void changeTeam(Team team) {
         this.team = team;
+        team.getMembers().add(this);
     }
 }
