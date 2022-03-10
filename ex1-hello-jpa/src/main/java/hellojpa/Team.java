@@ -12,10 +12,12 @@ public class Team {
     private Long id;
     private String name;
 
-    // 무엇과 연결되어 있는지를 작성해주는 것. (변수명으로 작성)
-    // 즉, team에 의해 관리되고 있다는 것을 말한다.(team이 연관관계의 주인)
-    @OneToMany(mappedBy = "team")
-    private List<Member> members = new ArrayList<>(); // 관례: 반드시 ArrayList로 초기화 해준다.
+    // 아래 코드가 없으면 다대일 단뱡향이 된다.
+    // 추가한다고 해서 테이블에 영향을 주지 않는다.
+//    @OneToMany(mappedBy = "team") // 다대일 연관관계
+    @OneToMany
+    @JoinColumn(name = "TEAM_ID")
+    private List<Member> members = new ArrayList<>();
 
     public Long getId() {
         return id;
