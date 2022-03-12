@@ -25,6 +25,12 @@ public class Order {
     @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItems = new ArrayList<>();
 
+    // 주문과 배송 관계 중 주테이블은 주문
+    // 연관관계의 주인이다.
+    @OneToOne
+    @JoinColumn(name = "DELIVERY_ID")
+    private Delivery delivery; // 배송정보
+
     // 자바 8부터는 자동 매핑됨
     // spring boot에서는 카멜 스타일을 자동으로 데이터베이스 컬럼 규칙 형태(order_date)와 연결해준다.
     private LocalDateTime orderDate;
