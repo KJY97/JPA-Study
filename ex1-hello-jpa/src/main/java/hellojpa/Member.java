@@ -6,7 +6,7 @@ import java.util.List;
 
 @Entity // 반드시 넣어줘야 한다! 그래야 처음 jpa가 로딩될 때 인식 가능함
 //@Table(name = "USER") // 만약 DB의 memeber이름이 User라면 이렇게 지정해준다.
-public class Member {
+public class Member extends BaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "MEMBER_ID")
@@ -37,6 +37,13 @@ public class Member {
 
     @OneToMany(mappedBy = "product")
     private List<MemberProduct> memberProducts = new ArrayList<>();
+
+    // 모든 테이블에 반드시 있어야 하는 속성 -> 일일이 모든 테이블에 복사하기에는 중복되는 느낌이 있다.
+    // 이럴 때 사용하는 것이 BaseEntity
+//    private String createdBy;
+//    private LocalDateTime createDate;
+//    private String lastModifiedBy;
+//    private LocalDateTime lastModifiedDate;
 
     public Long getId() {
         return id;

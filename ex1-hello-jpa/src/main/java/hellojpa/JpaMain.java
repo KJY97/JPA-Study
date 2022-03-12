@@ -4,7 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import java.util.List;
+import java.time.LocalDateTime;
 
 public class JpaMain {
 
@@ -21,19 +21,33 @@ public class JpaMain {
         // 문제가 발생할 때를 대비하는 정석 코드 try catch문
         try {
 
+            // 상속관계 매핑 확인해보기
+            Movie movie = new Movie();
+            movie.setDirector("aaa");
+            movie.setActor("bbb");
+            movie.setName("바람과함께사라지다");
+            movie.setPrice(10000);
+
+            em.persist(movie);
+
+            em.flush();
+            em.clear();
+
+            // 조회할 때에는 Join을 통해 조회한다. inner join 사용
+            Movie findMovie = em.find(Movie.class, movie.getId());
+            System.out.println("findMovie = " + findMovie);
+
+            // 구현 클래스마다 테이블 전략으로 할 시 item과 같은 것을 찾으려고 하면 모든 테이블을 찾아봐야 한다. (비효율적)
+//            Item item = em.find(Item.class, movie.getId());
+//            System.out.println("item = " + item);
+
+            // MappedSuperclass 확인
             Member member = new Member();
-            member.setUsername("member1");
+            member.setUsername("user1");
+            member.setCreatedBy("kim");
+            member.setCreateDate(LocalDateTime.now());
 
             em.persist(member);
-
-            Team team = new Team();
-            team.setName("teamA");
-            // 이 부분이 애매하다. team 테이블이 insert 되는 부분이 아니다.
-            // 이 외래키는 member 테이블을 가리키고 있어서 member 테이블이 바뀐다.(update 실행)
-            // 왜냐하면 team 엔티티(teamA)가 TEAM 테이블에 저장이 되면서, 같이 연결된 member 테이블의 TEAM_ID는 FK이므로 update를 하는 수밖에 없다.
-            team.getMembers().add(member);
-
-            em.persist(team);
 
             tx.commit(); // 트랜잭션 종료
         } catch (Exception e) {
