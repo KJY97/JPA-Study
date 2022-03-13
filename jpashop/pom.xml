@@ -16,10 +16,11 @@
     <dependencies>
         <!-- JPA 하이버네이트 -->
         <!-- hibernate-entitymanager는 연관된 라이브러리(core, javax.persistence-api 등)을 포함한다. -->
+        <!-- h2 버그 + hibernate 버그로 인해 5.4.13으로 수정 -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>5.3.10.Final</version>
+            <version>5.4.13.Final</version>
         </dependency>
 
         <!-- H2 데이터베이스 -->
