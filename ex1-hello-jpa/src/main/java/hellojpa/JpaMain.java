@@ -1,12 +1,7 @@
 package hellojpa;
 
-import org.hibernate.Hibernate;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
-import java.time.LocalDateTime;
+import javax.persistence.*;
+import java.util.List;
 
 public class JpaMain {
 
@@ -22,25 +17,47 @@ public class JpaMain {
 
         // 문제가 발생할 때를 대비하는 정석 코드 try catch문
         try {
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
+            Team teamB = new Team();
+            team.setName("teamB");
+            em.persist(teamB);
+
             Member member1 = new Member();
             member1.setUsername("member1");
+            member1.setTeam(team);
             em.persist(member1);
+
+            Member member2 = new Member();
+            member2.setUsername("member2");
+            member2.setTeam(teamB);
+            em.persist(member2);
 
             em.flush();
             em.clear();
 
-            // 프록시 객체는 식별자 값을 가지고 있으므로 식별자 값을 조회하는 getId()를 호출해도 초기화하지 않는다.
-            Member reference = em.getReference(Member.class, member1.getId());
-            System.out.println("m3 = " + reference.getClass()); // 프록시인지 진짜 엔티티인지 확인하려면 getClass로 확인
+            Member m = em.find(Member.class, member1.getId());
 
-            // JPA에서는 이 방법만 지원한다.
-            reference.getUsername(); // 강제 호출을 통한 강제 초기화
+            // 지연 로딩 시 Proxy로 출력
+            // 즉시 로딩 시 진짜 엔티티 team 출력
+           System.out.println("m = " + m.getTeam().getClass());
 
-            // 하이버네이트에서 제공하는 강제 초기화 방법
-            Hibernate.initialize(reference); // 강제 초기화
+            System.out.println("=============");
+            // 지연 로딩 시 m은 프록시이므로 이 시점에서 쿼리 등장 (초기화)
+            // 즉시 로딩 시 teamName값 출력
+            System.out.println("team name = " + m.getTeam().getName());
+            System.out.println("=============");
 
-           // 위 초기화 코드가 있으면 true, 없으면 false 반환
-            System.out.println("isLoaded = " + emf.getPersistenceUnitUtil().isLoaded(reference)); // 프록시 초기화 여부 확인
+            em.clear();
+            em.flush();
+
+            // JPQL에서 "select m from Member m"는 말 그대로 SQL로 해석된다.
+            // 즉, SQL 대로 해석하면 Member 테이블을 그대로 가져와야 하는데 Team이 걸려서 Team도 조회
+            // 만약 즉시 로딩이라면 team 객체가 2개일 때 team 2개 모두 나온다.. => N+1
+            List<Member> members = em.createQuery("select m from Member m", Member.class)
+                    .getResultList();
 
             tx.commit(); // 트랜잭션 종료
         } catch (Exception e) {

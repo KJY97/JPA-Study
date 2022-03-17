@@ -13,14 +13,10 @@ public class Member extends BaseEntity {
     @Column(name = "USERNAME")
     private String username;
 
-    // 객체 관계 매핑! (다대일)
-//    @ManyToOne // Member 입장에서 Many, Team 입장에서는 one
-//    @JoinColumn(name = "TEAM_ID")    // 매핑할 외래키 아름 지정
-//    private Team team;
-
     // 일대다 양방향 매핑을 만들기 위한, 다대일 단방향 매핑
-    @ManyToOne
-    @JoinColumn(name = "TEAM_ID", insertable = false, updatable = false) // 같은 TEAM_ID 외래키를 관리하므로 읽기 전용으로 설정
+//    @ManyToOne(fetch = FetchType.LAZY) // Proxy 객체 조회를 한다. (지연 로딩)
+    @ManyToOne(fetch = FetchType.EAGER) // 즉시 로딩
+    @JoinColumn
     private Team team;
 
     // 모든 테이블에 반드시 있어야 하는 속성 -> 일일이 모든 테이블에 복사하기에는 중복되는 느낌이 있다.
