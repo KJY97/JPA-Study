@@ -1,5 +1,7 @@
 package hellojpa;
 
+import org.hibernate.Hibernate;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -29,17 +31,16 @@ public class JpaMain {
 
             // 프록시 객체는 식별자 값을 가지고 있으므로 식별자 값을 조회하는 getId()를 호출해도 초기화하지 않는다.
             Member reference = em.getReference(Member.class, member1.getId());
-            System.out.println("m3 = " + reference.getClass()); // Proxy
+            System.out.println("m3 = " + reference.getClass()); // 프록시인지 진짜 엔티티인지 확인하려면 getClass로 확인
 
-            // 만약 영속성 컨텍스트를 종료하거나, 영속성 관리는 더 이상안하겠다고 선언하면 문제 발생 => LazyInitializationException
-//            em.close();
-//            em.detach(reference);
+            // JPA에서는 이 방법만 지원한다.
+            reference.getUsername(); // 강제 호출을 통한 강제 초기화
 
-            em.clear(); // 추가로 clear로해도 문제 발생
+            // 하이버네이트에서 제공하는 강제 초기화 방법
+            Hibernate.initialize(reference); // 강제 초기화
 
-            // em.close() or em.detach()를 안하면 문제 발생 안함
-            // 실제 DB로 쿼리가 날아가면서 초기화가 된다.
-            reference.getUsername();
+           // 위 초기화 코드가 있으면 true, 없으면 false 반환
+            System.out.println("isLoaded = " + emf.getPersistenceUnitUtil().isLoaded(reference)); // 프록시 초기화 여부 확인
 
             tx.commit(); // 트랜잭션 종료
         } catch (Exception e) {
