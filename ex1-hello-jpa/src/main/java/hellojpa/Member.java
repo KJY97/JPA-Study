@@ -1,8 +1,6 @@
 package hellojpa;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity // 반드시 넣어줘야 한다! 그래야 처음 jpa가 로딩될 때 인식 가능함
 //@Table(name = "USER") // 만약 DB의 memeber이름이 User라면 이렇게 지정해준다.
@@ -24,19 +22,6 @@ public class Member extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "TEAM_ID", insertable = false, updatable = false) // 같은 TEAM_ID 외래키를 관리하므로 읽기 전용으로 설정
     private Team team;
-
-    // ManyToOne과 비슷
-    @OneToOne
-    @JoinColumn(name = "LOCKER_ID")
-    private Locker locker;
-
-    // 다대다 관계
-//    @ManyToMany
-//    @JoinTable(name = "MEMBER_PRODUCT")
-//    private List<Product> products = new ArrayList<>();
-
-    @OneToMany(mappedBy = "product")
-    private List<MemberProduct> memberProducts = new ArrayList<>();
 
     // 모든 테이블에 반드시 있어야 하는 속성 -> 일일이 모든 테이블에 복사하기에는 중복되는 느낌이 있다.
     // 이럴 때 사용하는 것이 BaseEntity
@@ -61,12 +46,12 @@ public class Member extends BaseEntity {
         this.username = username;
     }
 
-//    public Team getTeam() {
-//        return team;
-//    }
-//
-//    public void setTeam(Team team) {
-//        this.team = team;
-//    }
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
 
 }

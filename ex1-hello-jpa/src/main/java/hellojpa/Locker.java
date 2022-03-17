@@ -13,6 +13,6 @@ public class Locker {
 
     // 양방향
     // 연관관계 주인이 아니라고 설정 mappedBy
-    @OneToOne(mappedBy = "locker")
-    private Member member;
+//    @OneToOne(mappedBy = "locker")
+//    private Member member;
 }
