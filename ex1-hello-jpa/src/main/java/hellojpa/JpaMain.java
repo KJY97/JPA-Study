@@ -34,6 +34,17 @@ public class JpaMain {
             // CASECADE를 Parent에 추가하고 나면 em.persist를 한번만 호출하면 된다.
             em.persist(parent);
 
+            em.flush();
+            em.clear();
+
+            // ======= 고아객체 =======
+            Parent findParent = em.find(Parent.class, parent.getId());
+//            findParent.getChildList().remove(0); // 자식 엔티티를 컬렉션에서 삭제
+
+            // 고아객체 제거는 부모를 제거하면 자식도 같이 제거한다!
+            // 이는 CascadeType.REMOVE 와 동일하다.
+            em.remove(findParent);
+
             tx.commit();
 
         } catch (Exception e) {

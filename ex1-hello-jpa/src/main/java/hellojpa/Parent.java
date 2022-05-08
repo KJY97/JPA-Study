@@ -13,7 +13,9 @@ public class Parent {
 
     private String name;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST)
+    // 고아객체 관리 orphanRemoval = true
+    // CascadeType.ALL 영속성 전이 모두 적용(영속, 삭제, 병합)
+    @OneToMany(mappedBy = "parent", orphanRemoval = true)
     private List<Child> childList = new ArrayList<>();
 
     // ==== 연관관계 메소드 ====
@@ -36,5 +38,13 @@ public class Parent {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Child> getChildList() {
+        return childList;
+    }
+
+    public void setChildList(List<Child> childList) {
+        this.childList = childList;
     }
 }
