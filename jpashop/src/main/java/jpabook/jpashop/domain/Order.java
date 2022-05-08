@@ -18,16 +18,17 @@ public class Order extends BaseEntity {
 
     // 설계할 때는 단방향으로!
     // 가급적 관계는 단방향이 좋다.
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member; // 객체 지향스럽게!
 
-    @OneToMany(mappedBy = "order")
+    // 영속성 전이 설정
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     // 주문과 배송 관계 중 주테이블은 주문
     // 연관관계의 주인이다.
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "DELIVERY_ID")
     private Delivery delivery; // 배송정보
 

@@ -14,7 +14,7 @@ public class Category extends BaseEntity {
 
     // ==== 카테고리 밑에 또 다른 카테고리를 나타내기 위한 코드 ====
     // 계층구조를 위한 코드들
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY) // 지연 로딩 설정
     @JoinColumn(name = "PARENT_ID")
     private Category parent;
 
